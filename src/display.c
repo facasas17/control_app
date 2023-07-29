@@ -9,19 +9,17 @@
 /*******************************************************************************
  * Includes
  ******************************************************************************/
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-
-#include "nodes.h"
 #include "display.h"
+
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
+#define DISPLAY_TASK_DELAY      100
 
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
-static void hardware_config(void);
+
 
 /*******************************************************************************
  * Variables
@@ -30,19 +28,14 @@ static void hardware_config(void);
 /*******************************************************************************
  * Code - private
  ******************************************************************************/
-static void hardware_config(void)
-{
-
-}
 
 /*******************************************************************************
  * Code - public
  ******************************************************************************/
-void app_main(void)
+void displayTask(void *arg)
 {
-    hardware_config();
-
-    xTaskCreate(nodeCommTask, "node_communication_task", 1024*2, NULL, configMAX_PRIORITIES-2, NULL);
-    xTaskCreate(displayTask, "display_task", 1024*2, NULL, configMAX_PRIORITIES-1, NULL);
+    while (1) 
+    {
+        vTaskDelay(DISPLAY_TASK_DELAY / portTICK_PERIOD_MS);
+    }
 }
-
