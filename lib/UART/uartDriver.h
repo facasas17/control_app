@@ -19,11 +19,11 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-#define UART0_TXD        GPIO_NUM_1
-#define UART0_RXD        GPIO_NUM_3
+#define UART0_TXD       GPIO_NUM_1
+#define UART0_RXD       GPIO_NUM_3
 
-#define UART2_TXD        GPIO_NUM_17
-#define UART2_RXD        GPIO_NUM_16
+#define UART2_TXD       GPIO_NUM_17
+#define UART2_RXD       GPIO_NUM_16
 
 #define RE_DE_PIN       GPIO_NUM_4      //Read Enable - Data enable MAX485 pin
 typedef enum{
@@ -65,8 +65,11 @@ void UART_SendData(uint8_t port, char *data, uint16_t len);
  * @param *data buffer of data to read
  * @param len size of buffer
  * 
+ * @return  (-1) Error
+ *          (>=0) The number of bytes read from UART FIFO
+ * 
 */
-void UART_ReadData(uint8_t port, char *data, uint16_t len);
+uart_status_t UART_ReadData(uint8_t port, char *data, uint16_t len);
 
 /*
  * @brief Wait for TX transfer to finish

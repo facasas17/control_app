@@ -53,7 +53,7 @@ static uint8_t check_CRC(char *buff)
  ******************************************************************************/
 
 // Function to set the data on the frame
-void protocol_setFrame(protocol_frame_t *frame, uint8_t address, uint8_t actionCode, uint8_t flagStatus, 
+void protocol_setFrame(protocol_frame_t *frame, uint8_t address, action_code_t actionCode, flag_status_t flagStatus, 
                         uint16_t temp, uint16_t hum) 
 {
     frame->address = address;

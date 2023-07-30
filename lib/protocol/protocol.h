@@ -17,13 +17,24 @@
 /*******************************************************************************
  * Definitions
 ******************************************************************************/
+#define PROTOCOL_SIZE   7
+typedef enum{
+    ACTION_BROADCAST,
+    ACTION_ONE,
+    ACTION_ANSWER 
+}action_code_t;
+
+typedef enum{
+    FLAG_OK,
+    FLAG_ERROR 
+}flag_status_t;
+
 typedef struct {
     uint8_t address;
-    uint8_t actionCode : 4;
-    uint8_t flagStatus : 4;
+    action_code_t actionCode : 4;
+    flag_status_t flagStatus : 4;
     uint32_t payload;
 } protocol_frame_t;
-
 typedef enum{
     CRC_OK,
     CRC_ERROR 
@@ -42,7 +53,7 @@ typedef enum{
  * @param hum humidity measured with sensor
  * 
  */
-void protocol_setFrame(protocol_frame_t *frame, uint8_t address, uint8_t actionCode, uint8_t flagStatus, 
+void protocol_setFrame(protocol_frame_t *frame, uint8_t address, action_code_t actionCode, flag_status_t flagStatus, 
                         uint16_t temp, uint16_t hum); 
 
 /*

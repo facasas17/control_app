@@ -76,9 +76,9 @@ void UART_SendData(uint8_t port, char *data, uint16_t len)
     uart_write_bytes(port, data, len);
 }
 
-void UART_ReadData(uint8_t port, char *data, uint16_t len)
+uart_status_t UART_ReadData(uint8_t port, char *data, uint16_t len)
 {
-    uart_read_bytes(port, data, len, UART_DELAY);
+    return uart_read_bytes(port, data, len, UART_DELAY);
 }
 
 uart_status_t UART_WaitTX(uint8_t port)
