@@ -86,7 +86,19 @@ uart_status_t UART_WaitTX(uint8_t port)
     return uart_wait_tx_done(port, UART_DELAY);
 }
 
+uint8_t UART_Available(uint8_t port)
+{
+    int available;
+
+    uart_get_buffered_data_len(port, (size_t)&available);
+
+    return available;
+}
+
+/*************************************************************/
 /************************ ---RS485--- ************************/
+/*************************************************************/
+
 void RS485_ConfigGPIO(void)
 {
     RS485_pin = RE_DE_PIN;

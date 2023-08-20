@@ -31,7 +31,7 @@ static void hardware_config(void);
 static uint8_t manager_address = 0x00;
 
 QueueHandle_t node_uart_queue;
-
+extern QueueHandle_t sensorData_queue;
 /*******************************************************************************
  * Code - private
  ******************************************************************************/
@@ -51,18 +51,17 @@ void nodeManagerTask(void *arg)
     node_number_t node;
     uint16_t len_data = 0;
     uart_event_t event;
-    int uart_read_flag;
+    int uart_read_flag = 0;
 
     protocol_frame_t frame_send;
     protocol_frame_t frame_receive;
     char data_send[NODE_BUF_SIZE];
     char data_receive[NODE_BUF_SIZE];
-    
+
     hardware_config();
 
     while (1) 
     {
-        
         for(node=NODE_01; node<TOTAL_NODES; node++)
         {
             RS485_EnableSendData();
@@ -75,29 +74,26 @@ void nodeManagerTask(void *arg)
                 UART_SendData(NODE_UART_PORT, data_send, len_data);
             }
 
+            RS485_EnableReceiveData();
 
-        if (xQueueReceive(node_uart_queue, (void *)&event, 5000/ portTICK_PERIOD_MS))
-        {      
-            if (event.type == UART_PATTERN_DET)
-            {
-                uart_read_flag = UART_ReadData(NODE_UART_PORT, data_receive, PROTOCOL_SIZE - 1);
+            if (xQueueReceive(node_uart_queue, (void *)&event, 5000/ portTICK_PERIOD_MS))
+            {      
+                if (event.type == UART_PATTERN_DET)
+                {
+                    uart_read_flag = UART_ReadData(NODE_UART_PORT, data_receive, PROTOCOL_SIZE - 1);
+                }
+
+                if(UART_FAIL != uart_read_flag)
+                {
+                    protocol_readFrame(data_receive, &frame_receive);
+                }
             }
 
-            if(UART_FAIL != uart_read_flag)
+            if( xQueueSendToBack( sensorData_queue, ( void * ) &frame_receive, ( TickType_t ) 1000 ) != pdPASS )
             {
-                protocol_readFrame(data_receive, &frame_receive);
+                /* Failed to post the message, even after 1000 ticks. */
             }
-            
-
-            
         }
-
-
-
-
-
-        }
-        
 
         vTaskDelay(NODE_TASK_DELAY / portTICK_PERIOD_MS);
     }
