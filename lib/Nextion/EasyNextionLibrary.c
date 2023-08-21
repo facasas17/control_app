@@ -29,8 +29,6 @@ static void EasyNex_clearSerialBuffer(easyNex_t *nex);
 /*******************************************************************************
  * Variables
  ******************************************************************************/
-static const char* TAG = "EasyNex";
-
 char global_start_char;
 
 uint8_t global_cmdFound;
@@ -301,7 +299,7 @@ char* EasyNex_readStr(easyNex_t* nex, const char* comp)
     // }
 
     // return _readString.c_str();
-    return 1;
+    return '1';
 }
 
 int EasyNex_readByte(easyNex_t* nex)

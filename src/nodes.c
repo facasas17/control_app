@@ -31,8 +31,8 @@ static void calcular_PromedioNivel(uint16_t *temperatura, uint16_t *hum, protoco
  ******************************************************************************/
 static uint8_t manager_address = 0x00;
 
-uint32_t temp_silo[CANT_SILOS][CANT_NIVELES];
-uint32_t hum_silo[CANT_SILOS][CANT_NIVELES];
+display_data_t temp_silo[CANT_SILOS][CANT_NIVELES];
+display_data_t hum_silo[CANT_SILOS][CANT_NIVELES];
 
 QueueHandle_t node_uart_queue;
 QueueHandle_t humData_queue;
@@ -53,7 +53,7 @@ static void calcular_PromedioNivel(uint16_t *temperatura, uint16_t *hum, protoco
 {
     uint32_t num1, num2, num3;
 
-    uint16_t mascara_temp = 0xFFFF0000;
+    uint32_t mascara_temp = 0xFFFF0000;
     
     num1 = (uint16_t)(node1.payload & mascara_temp);
     num2 = (uint16_t)(node2.payload & mascara_temp);
@@ -86,13 +86,13 @@ void nodeManagerTask(void *arg)
 
     hardware_config();
 
-    humData_queue = xQueueCreate(10, sizeof(uint32_t));
+    humData_queue = xQueueCreate(10, sizeof(display_data_t));
     if(humData_queue == NULL)
     {
         while(1);
     }
 
-    tempData_queue = xQueueCreate(10, sizeof(uint32_t));   
+    tempData_queue = xQueueCreate(10, sizeof(display_data_t));   
     if(tempData_queue == NULL)
     {
         while(1);
@@ -132,9 +132,11 @@ void nodeManagerTask(void *arg)
 
         node = 0;
 
-        for(i=1; i<(CANT_NIVELES+1) ; i++)
+        for(i=0; i<CANT_NIVELES ; i++)
         {
-            calcular_PromedioNivel(&temp_silo[CANT_SILOS][i], &hum_silo[CANT_SILOS][i],
+            temp_silo[CANT_SILOS][i].nivel = i+1;
+            hum_silo[CANT_SILOS][i].nivel = i+1;
+            calcular_PromedioNivel(&temp_silo[CANT_SILOS][i].data, &hum_silo[CANT_SILOS][i].data,
                                     frame_receive[node], frame_receive[node+CANT_NIVELES], frame_receive[node+CANT_NIVELES*2]);
             ++node;
 

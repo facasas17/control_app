@@ -35,6 +35,7 @@ typedef struct {
     flag_status_t flagStatus : 4;
     uint32_t payload;
 } protocol_frame_t;
+
 typedef enum{
     CRC_OK,
     CRC_ERROR 
