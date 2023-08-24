@@ -35,7 +35,7 @@
  ******************************************************************************/
 void app_main(void)
 {
-    xTaskCreate(nodeManagerTask, "node_manager_task", 1024*2, NULL, configMAX_PRIORITIES-2, NULL);
-    xTaskCreate(displayTask, "display_task", 1024*2, NULL, configMAX_PRIORITIES-5, NULL);
+    xTaskCreate(nodeManagerTask, "node_manager_task", 1024*6, NULL, configMAX_PRIORITIES-2, NULL);
+    //xTaskCreate(displayTask, "display_task", 1024*2, NULL, configMAX_PRIORITIES-5, NULL);
 }
 

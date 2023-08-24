@@ -5,19 +5,22 @@
  * Version: 1.0
  * 
  */
-
+#define LOG_LOCAL_LEVEL ESP_LOG_VERBOSE
 /*******************************************************************************
  * Includes
  ******************************************************************************/
 #include "nodes.h"
-
+#include "stdio.h"
+#include "esp_log.h"
+static const char *TAG = "NODE";
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-#define NODE_TASK_DELAY     10000
+#define NODE_TASK_DELAY     100
 
 #define NODE_UART_PORT      UART_NUM_0
 #define NODE_UART_BAUDRATE  9600    //4800
+#define NODE_UART_BUF_SIZE  256
 #define NODE_BUF_SIZE       (PROTOCOL_SIZE * 8)      // Tamaño del protocolo
 
 /*******************************************************************************
@@ -43,7 +46,7 @@ QueueHandle_t tempData_queue;
  ******************************************************************************/
 static void hardware_config(void)
 {
-    UART_Config(NODE_UART_PORT, NODE_UART_BAUDRATE, NODE_BUF_SIZE, &node_uart_queue, manager_address);
+    UART_Config(NODE_UART_PORT, NODE_UART_BAUDRATE, NODE_UART_BUF_SIZE, &node_uart_queue, manager_address);
     
     RS485_ConfigGPIO();
 }
@@ -85,7 +88,7 @@ void nodeManagerTask(void *arg)
     char data_receive[NODE_BUF_SIZE];
 
     hardware_config();
-
+    
     humData_queue = xQueueCreate(10, sizeof(display_data_t));
     if(humData_queue == NULL)
     {
@@ -100,6 +103,7 @@ void nodeManagerTask(void *arg)
 
     while (1) 
     {
+        ESP_LOGI(TAG, "Esto es una prueba\n");
         for(node=NODE_01; node<TOTAL_NODES; node++)
         {
             RS485_EnableSendData();
@@ -143,7 +147,6 @@ void nodeManagerTask(void *arg)
             xQueueSendToBack( humData_queue, ( void * ) &temp_silo[CANT_SILOS][i], ( TickType_t ) 1000 );
             xQueueSendToBack( tempData_queue, ( void * ) &hum_silo[CANT_SILOS][i], ( TickType_t ) 1000 );
         }
-
         vTaskDelay(NODE_TASK_DELAY / portTICK_PERIOD_MS);
     }
 }
